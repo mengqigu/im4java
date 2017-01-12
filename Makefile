@@ -69,9 +69,10 @@ all: clean src jar
 # targets (compilation) -------------------------------------------------------
 
 # prevent excessive regeneration of source
+# TODO: mk-im4java is not working. Disable this for now
 src: src/org/im4java/core/IMOps.java
 src/org/im4java/core/IMOps.java:
-	bin/mk-im4java -p $(JAVA_PACKAGE)
+	# bin/mk-im4java -p $(JAVA_PACKAGE)
 
 compile: compile-lib
 
@@ -198,8 +199,7 @@ postdist:
 # targets (release management)  -----------------------------------------------
 
 upload-files:
-	pwd
-	# Use this to upload to our own server
+	# TODO: Use this to upload to our own server
 	# rsync -avP -e ssh $(DIST_DIR) bablokb,im4java@frs.sourceforge.net:$(SF_DIR)
 
 update-web: doc-clean doc
