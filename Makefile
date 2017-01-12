@@ -7,6 +7,9 @@
 # License: GPL2 (see COPYING)
 # -----------------------------------------------------------------------------
 
+# TODO: coreutils for BSD is different from GNU linux,
+# thus need tomodify this script for macOS
+
 .PHONY: all src test test-prepare clean dist-clean \
         compile compile-lib compile-contrib \
         jar jar-lib jar-contrib jar-1.5 jar-contrib-1.5 \
@@ -26,6 +29,7 @@ DIST_DIR   := release/$(DIST_NAME)
 DIST_STUFF := $(wildcard README* NEWS TODO INSTALL ChangeLog COPYING*) Makefile \
 	      version.inc bin input doc-src images.src src contrib
 
+# TODO: this is use for remote deployment
 SF_DIR := /home/frs/project/i/im/im4java
 
 JAVA_PACKAGE=org.im4java.core
@@ -39,10 +43,32 @@ MANDIR    = $(PREFIX)/share/man
 MAN1DIR   = $(MANDIR)/man1
 MAN5DIR   = $(MANDIR)/man5
 SHAREDIR  = $(PREFIX)/share/$(DIST)
+UNAME     = $(shell uname)
 
 # targets ---------------------------------------------------------------------
-
 default:
+ifeq ($(UNAME),Darwin)
+	@echo  "\nmain targets:\n"
+	@echo  "\tall:              recreates source and jar from scratch"
+	@echo  "\tsrc:              create java-sources from interface-definitions"
+	@echo  "\tcompile:          compile source-code"
+	@echo  "\tcompile-contrib:  compile contrib-source-code\n"
+	@echo  "\tjar:              create $(DIST_NAME).jar"
+	@echo  "\tjar-contrib:      create $(DIST_NAME)-contrib.jar\n"
+	@echo  "\ttest:             run test-suite"
+	@echo  "\ttest-prepare:     prepare tests\n"
+	@echo  "\tdoc:              create documentation"
+	@echo  "\tapi-doc:          create API-documentation"
+	@echo  "\tforrest:          create HTML-documentation"
+	@echo  "\tdoc-clean:        cleanup generated documentation\n"
+	@echo  "\tshow-news:        list of changes since last release"
+	@echo  "\tupdate-changelog: update ChangeLog for next release\n"
+	@echo  "\tsrcdist:          create source-distribution"
+	@echo  "\tbindist:          create binary-distribution (also includes source)\n"
+	@echo  "\tclean:            cleanup after compile and test"
+	@echo  "\tdist-clean:       complete cleanup"
+	@echo  ""
+else
 	@echo -e "\nmain targets:\n"
 	@echo -e "\tall:              recreates source and jar from scratch"
 	@echo -e "\tsrc:              create java-sources from interface-definitions"
@@ -63,6 +89,7 @@ default:
 	@echo -e "\tclean:            cleanup after compile and test"
 	@echo -e "\tdist-clean:       complete cleanup"
 	@echo -e ""
+endif
 
 all: clean src jar
 
@@ -76,7 +103,6 @@ src/org/im4java/core/IMOps.java:
 
 compile: compile-lib
 
-# TARGET=1.6
 TARGET=1.8
 
 compile-lib: src

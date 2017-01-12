@@ -25,20 +25,25 @@ usage() {
 }
 
 # set defaults   --------------------------------------------------------------
-
-# TODO: -printf for find is not supported in macOS
 setDefaults() {
  binDir=`dirname "$0"`
  outputDir="$binDir/../src"
  inputDir="$binDir/../input"
  package="org.im4java.core"
- eval idfs=(`find "$binDir/../input/" -type f \
-                                       -name "*interface.txt" -printf '"%p" '`)
+ if [ `uname` = "Darwin" ]; then
+     # No -printf option for macOS bash
+     eval idfs=(`find "$binDir/../input" -type f \
+     -name "*interface.txt"`)
+ else
+     eval idfs=(`find "$binDir/../input/" -type f \
+     -name "*interface.txt" -printf '"%p" '`)
+ fi
  CLASS_HEAD="$inputDir/java.class.head"
  TEMPLATE_OPERATION="$inputDir/operation.java.template"
  TEMPLATE_CMD="$inputDir/cmd.java.template"
  DEBUG=0
  quiet=0
+ # printf "%s\n" "${idfs[@]}"
 }
 
 # parse arguments and set variables -------------------------------------------
