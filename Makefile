@@ -7,9 +7,6 @@
 # License: GPL2 (see COPYING)
 # -----------------------------------------------------------------------------
 
-# TODO: coreutils for BSD is different from GNU linux,
-# thus need tomodify this script for macOS
-
 .PHONY: all src test test-prepare clean dist-clean \
         compile compile-lib compile-contrib \
         jar jar-lib jar-contrib jar-1.5 jar-contrib-1.5 \
