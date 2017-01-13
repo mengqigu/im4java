@@ -36,7 +36,7 @@ import java.util.concurrent.FutureTask;
 
 /**
    This class implements the processing of os-commands using a
-   ProcessBuilder. 
+   ProcessBuilder.
 
    <p>
      This is the core class of the im4java-library where all the
@@ -47,7 +47,7 @@ import java.util.concurrent.FutureTask;
 
    @version $Revision: 1.38 $
    @author  $Author: bablokb $
- 
+
    @since 0.95
 */
 
@@ -120,15 +120,15 @@ public class ProcessStarter {
 
 
   ////////////////////////////////////////////////////////////////////////////
-  
+
   /**
     Execution-mode. If true, run asynchronously.
   */
-  
+
   private boolean iAsyncMode = false;
 
   ////////////////////////////////////////////////////////////////////////////
-  
+
   /**
     The ProcessListeners for this ProcessStarter.
 
@@ -140,17 +140,17 @@ public class ProcessStarter {
 
   @SuppressWarnings("deprecation")
   private LinkedList<ProcessListener> iProcessListener;
-  
+
   ////////////////////////////////////////////////////////////////////////////
-  
+
   /**
     The ProcessEventListeners for this ProcessStarter.
   */
   private LinkedList<ProcessEventListener> iProcessEventListener;
-  
+
   //////////////////////////////////////////////////////////////////////////////
 
-  /** 
+  /**
       Static initializer
   */
 
@@ -241,13 +241,13 @@ public class ProcessStarter {
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  
+
   /**
      Pipe input to the command. This is done asynchronously.
   */
 
   private void processInput(OutputStream pOutputStream) throws IOException {
-	  final BufferedOutputStream bos = 
+	  final BufferedOutputStream bos =
 		  new BufferedOutputStream(pOutputStream,BUFFER_SIZE);
     (new Thread() {
 	public void run() {
@@ -270,7 +270,7 @@ public class ProcessStarter {
      Let the OutputConsumer process the output of the command.
   */
 
-  private void processOutput(InputStream pInputStream, 
+  private void processOutput(InputStream pInputStream,
 		  OutputConsumer pConsumer) throws IOException{
     BufferedInputStream bis = new BufferedInputStream(pInputStream,BUFFER_SIZE);
     pConsumer.consumeOutput(bis);
@@ -279,14 +279,14 @@ public class ProcessStarter {
       pInputStream.close();
     }
   }
-  
+
   //////////////////////////////////////////////////////////////////////////////
 
   /**
      Let the ErrorConsumer process the stderr-stream.
   */
 
-  private void processError(InputStream pInputStream, 
+  private void processError(InputStream pInputStream,
 		  ErrorConsumer pConsumer) throws IOException{
     BufferedInputStream bis = new BufferedInputStream(pInputStream,BUFFER_SIZE);
     pConsumer.consumeError(bis);
@@ -295,16 +295,16 @@ public class ProcessStarter {
       pInputStream.close();
     }
   }
- 
+
  //////////////////////////////////////////////////////////////////////////////
-  
+
   /**
      Execute the command.
 
      @param pArgs         arguments for ProcessBuilder
-   */ 
-  
-  protected int run(LinkedList<String> pArgs) 
+   */
+
+  protected int run(LinkedList<String> pArgs)
                           throws IOException, InterruptedException, Exception {
 
     // create and execute process (synchronous mode)
@@ -326,8 +326,8 @@ public class ProcessStarter {
      Return a ProcessTask for future execution.
 
      @param pArgs         arguments for ProcessBuilder
-   */ 
-  
+   */
+
   protected ProcessTask getProcessTask(LinkedList<String> pArgs)  {
     // prepare ProcessEvent and call processInitiated
     final ProcessEvent pe = new ProcessEvent(iPID,this);
@@ -383,12 +383,12 @@ public class ProcessStarter {
   }
 
   //////////////////////////////////////////////////////////////////////////////
-  
+
   /**
        Execute the command.
-   */	
-  
-  private Process startProcess(LinkedList<String> pArgs) 
+   */
+
+  private Process startProcess(LinkedList<String> pArgs)
                       throws IOException, InterruptedException {
 
     // if a global or per object search path is set, resolve the
@@ -403,22 +403,31 @@ public class ProcessStarter {
       cmd = searchForCmd(cmd,iGlobalSearchPath);
       pArgs.set(0,cmd);
     }
+
+    // MG Debug
+    StringBuilder sb=new StringBuilder("Imagemagick command executed: ");
+    for (String arg : pArgs){
+        sb.append(" ");
+        sb.append(arg);
+    }
+    System.out.println(sb);
+
     ProcessBuilder builder = new ProcessBuilder(pArgs);
     return builder.start();
   }
 
   //////////////////////////////////////////////////////////////////////////////
-  
+
   /**
        Perform process input/output and wait for process to terminate.
-   */	
-  
-  private int waitForProcess(final Process pProcess) 
+   */
+
+  private int waitForProcess(final Process pProcess)
                       throws IOException, InterruptedException {
 
     FutureTask<Object> outTask = null;
     FutureTask<Object> errTask = null;
-    
+
     if (iInputProvider != null) {
       processInput(pProcess.getOutputStream());
     }
@@ -445,7 +454,7 @@ public class ProcessStarter {
       });
       new Thread(errTask).start();
     }
-    
+
     // Wait and check IO exceptions (FutureTask.get() blocks).
     try {
       if (outTask != null) {
@@ -456,7 +465,7 @@ public class ProcessStarter {
       }
     } catch (ExecutionException e) {
       Throwable t = e.getCause();
-			
+
       if (t instanceof IOException) {
         throw (IOException) t;
       } else if(t instanceof RuntimeException) {
@@ -465,10 +474,10 @@ public class ProcessStarter {
         throw new IllegalStateException(e);
       }
     }
-    
+
     pProcess.waitFor();
     int rc=pProcess.exitValue();
-     
+
     // just to be on the safe side
     try {
       pProcess.getInputStream().close();
@@ -480,7 +489,7 @@ public class ProcessStarter {
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  
+
   /**
      Set the async-execution mode.
 
@@ -491,7 +500,7 @@ public class ProcessStarter {
   }
 
   ////////////////////////////////////////////////////////////////////////////
-  
+
   /**
      Query the async-execution mode.
 
@@ -502,7 +511,7 @@ public class ProcessStarter {
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  
+
   /**
      Set the global (static) search path. You can override this search path
      on a per object basis.
@@ -515,7 +524,7 @@ public class ProcessStarter {
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  
+
   /**
      Query the global (static) search path.
   */
@@ -525,7 +534,7 @@ public class ProcessStarter {
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  
+
   /**
      Set the per object search path. This overrides the global search path
      (if set).
@@ -538,7 +547,7 @@ public class ProcessStarter {
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  
+
   /**
      Query the per object search path.
   */
@@ -548,7 +557,7 @@ public class ProcessStarter {
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  
+
   /**
      Set the process-id counter of the class.
 
@@ -560,7 +569,7 @@ public class ProcessStarter {
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  
+
   /**
      Set the process-id of this ProcessStarter.
 
@@ -572,7 +581,7 @@ public class ProcessStarter {
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  
+
   /**
      Query the process-id.
   */
@@ -582,22 +591,22 @@ public class ProcessStarter {
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  
+
   /**
      Post-processing after the process has terminated. Subclasses might
      override this method to do some specific post-processing.
 
      @param pReturnCode  the return-code of the process
   */
-    
+
   protected void finished(int pReturnCode) throws Exception {
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  
+
   /**
-     Post-processing after the process has terminated with an 
-     exception. Subclasses might override this method to do some 
+     Post-processing after the process has terminated with an
+     exception. Subclasses might override this method to do some
      specific post-processing. This method is only called in
      asynchronous execution mode (in synchronous mode, the exception
      just propagates as usual to the caller).
@@ -610,12 +619,12 @@ public class ProcessStarter {
 
      @param pException  the exception of the process
   */
-    
+
   protected void finished(Exception pException) throws Exception {
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  
+
   /**
      Query the per object search path.
 
@@ -631,7 +640,7 @@ public class ProcessStarter {
     }
 
     // special processing on windows-systems.
-    // File.pathSeparator is hopefully more robust than 
+    // File.pathSeparator is hopefully more robust than
     // System.getProperty("os.name") ?!
     boolean isWindows=File.pathSeparator.equals(";");
 
@@ -642,15 +651,15 @@ public class ProcessStarter {
 	File cmd = new File(dirs[i],pCmd+".exe");
 	if (cmd.exists()) {
 	  return cmd.getCanonicalPath();
-	} 
+	}
         cmd = new File(dirs[i],pCmd+".cmd");
 	if (cmd.exists()) {
 	  return cmd.getCanonicalPath();
-	} 
+	}
 	cmd = new File(dirs[i],pCmd+".bat");
 	if (cmd.exists()) {
 	  return cmd.getCanonicalPath();
-	} 
+	}
       } else {
 	File cmd = new File(dirs[i],pCmd);
 	if (cmd.exists()) {
