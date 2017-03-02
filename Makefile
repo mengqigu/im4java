@@ -14,7 +14,7 @@
         show-news update-changelog \
         srcdist bindist predist srcarch binarch postdist \
         upload-files update-web \
-        inc-dist-major inc-dist-minor inc-dist-pl
+        inc-dist-major inc-dist-minor inc-dist-pl install
 
 export
 include version.inc
@@ -88,7 +88,7 @@ else
 	@echo -e ""
 endif
 
-all: clean src jar
+all: clean src jar install
 
 # targets (compilation) -------------------------------------------------------
 
@@ -112,6 +112,10 @@ compile-contrib: compile-lib
 	mkdir -p build.contrib
 	javac -target $(TARGET) -d build.contrib/ \
                               -cp build `find contrib -name "*.java"`
+
+# TODO: make this install target more robust and configurable
+install: jar
+	mvn install:install-file -Dfile=/Users/mengqigu/Developer/im4java/im4java-1.4.0.jar -DgroupId=org.im4java -DartifactId=im4java -Dversion=1.4.0 -Dpackaging=jar
 
 jar: jar-lib
 
