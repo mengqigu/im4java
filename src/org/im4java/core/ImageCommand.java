@@ -56,7 +56,7 @@ import org.im4java.script.CmdScriptGenerator;
 
    @version $Revision: 1.32 $
    @author  $Author: bablokb $
- 
+
    @since 0.95
 */
 
@@ -89,7 +89,7 @@ public class ImageCommand extends ProcessStarter implements ErrorConsumer {
   //////////////////////////////////////////////////////////////////////////////
 
   /**
-     The default ScriptGenerator. 
+     The default ScriptGenerator.
   */
 
   private static ScriptGenerator iDefaultScriptGenerator;
@@ -97,7 +97,7 @@ public class ImageCommand extends ProcessStarter implements ErrorConsumer {
   //////////////////////////////////////////////////////////////////////////////
 
   /**
-     The ScriptGenerator of this ImageCommand. 
+     The ScriptGenerator of this ImageCommand.
   */
 
   private ScriptGenerator iScriptGenerator = null;
@@ -182,11 +182,11 @@ public class ImageCommand extends ProcessStarter implements ErrorConsumer {
 
      @param  pOperation The Operation to execute
      @param  images     Zero or more images (replace placeholders in pOperation)
-     @throws IM4JavaException 
+     @throws IM4JavaException
   */
 
-  private LinkedList<String> prepareArguments(Operation pOperation, 
-                                                               Object... images) 
+  private LinkedList<String> prepareArguments(Operation pOperation,
+                                                               Object... images)
                                             throws IOException, IM4JavaException {
     LinkedList<String> args = new LinkedList<String>(pOperation.getCmdArgs());
     args.addAll(0,iCommands);
@@ -202,10 +202,10 @@ public class ImageCommand extends ProcessStarter implements ErrorConsumer {
 
      @param  pOperation The Operation to execute
      @param  images     Zero or more images (replace placeholders in pOperation)
-     @throws IOException, InterruptedException, IM4JavaException 
+     @throws IOException, InterruptedException, IM4JavaException
   */
 
-  public void run(Operation pOperation, Object... images) 
+  public void run(Operation pOperation, Object... images)
     throws IOException, InterruptedException, IM4JavaException {
 
     // prepare list of arguments
@@ -228,10 +228,10 @@ public class ImageCommand extends ProcessStarter implements ErrorConsumer {
 
      @param  pOperation The Operation to execute
      @param  images     Zero or more images (replace placeholders in pOperation)
-     @throws IOException, IM4JavaException 
+     @throws IOException, IM4JavaException
   */
 
-  public ProcessTask getProcessTask(Operation pOperation, Object... images) 
+  public ProcessTask getProcessTask(Operation pOperation, Object... images)
                                           throws IOException, IM4JavaException {
     LinkedList<String> args = prepareArguments(pOperation,images);
     return getProcessTask(args);
@@ -245,21 +245,22 @@ public class ImageCommand extends ProcessStarter implements ErrorConsumer {
 
      @param pReturnCode  the return-code of the process
   */
-    
+
   protected void finished(int pReturnCode) throws Exception {
-    if (pReturnCode > 0) {
-      CommandException ce;
-      if (iErrorText.size() > 0) {
-	ce = new CommandException(iErrorText.get(0));
+      if (pReturnCode > 0) {
+          CommandException ce;
+          if (iErrorText.size() > 0) {
+              System.out.println("\tMG: Image command has error: " + iErrorText.get(0));
+              ce = new CommandException(iErrorText.get(0));
+          } else {
+              ce = new CommandException("return code: " + pReturnCode);
+          }
+          ce.setErrorText(iErrorText);
+          ce.setReturnCode(pReturnCode);
+          throw ce;
       } else {
-	ce = new CommandException("return code: " + pReturnCode);
+          removeTmpFiles();
       }
-      ce.setErrorText(iErrorText);
-      ce.setReturnCode(pReturnCode);
-      throw ce;
-    } else {
-      removeTmpFiles();
-    }
   }
 
   //////////////////////////////////////////////////////////////////////////////
@@ -268,7 +269,7 @@ public class ImageCommand extends ProcessStarter implements ErrorConsumer {
      Resolve images passed as arguments.
   */
 
-  private void resolveImages(LinkedList<String> pArgs,Object... pImages) 
+  private void resolveImages(LinkedList<String> pArgs,Object... pImages)
                                                             throws IOException {
     ListIterator<String> argIterator = pArgs.listIterator();
     int i = 0;
@@ -295,7 +296,7 @@ public class ImageCommand extends ProcessStarter implements ErrorConsumer {
 	  argIterator.set((String) obj);
         } else {
           // an image-placeholder with read-modifier
-          String modifier = 
+          String modifier =
                       currentArg.substring(Operation.IMG_PLACEHOLDER.length());
 	  argIterator.set(((String) obj)+modifier);
         }
@@ -315,13 +316,13 @@ public class ImageCommand extends ProcessStarter implements ErrorConsumer {
 
   /**
      Resolve DynamicOperations.
-     @throws IM4JavaException 
+     @throws IM4JavaException
   */
 
   private void resolveDynamicOperations(Operation pOp, LinkedList<String> pArgs,
                                      Object... pImages) throws IM4JavaException {
     ListIterator<String> argIterator = pArgs.listIterator();
-    ListIterator<DynamicOperation> dynOps = 
+    ListIterator<DynamicOperation> dynOps =
       pOp.getDynamicOperations().listIterator();
 
     // iterate over all DynamicOperations
@@ -338,7 +339,7 @@ public class ImageCommand extends ProcessStarter implements ErrorConsumer {
 
       if (op == null) {
 	// no operation
-	argIterator.remove();		  
+	argIterator.remove();
       } else {
 	List<String> args = dynOp.resolveOperation(pImages).getCmdArgs();
 	if (args == null) {
@@ -354,15 +355,15 @@ public class ImageCommand extends ProcessStarter implements ErrorConsumer {
       }
     }  // while (dynOps.hasNext())
   }
-  
+
   //////////////////////////////////////////////////////////////////////////////
-    
+
   /**
      This method just saves the stderr-output into an internal field.
-     
+
      @see org.im4java.process.ErrorConsumer#consumeError(java.io.InputStream)
   */
-    
+
   public void consumeError(InputStream pInputStream) throws IOException {
     InputStreamReader esr = new InputStreamReader(pInputStream);
     BufferedReader reader = new BufferedReader(esr);
@@ -374,7 +375,7 @@ public class ImageCommand extends ProcessStarter implements ErrorConsumer {
     reader.close();
     esr.close();
   }
-  
+
   //////////////////////////////////////////////////////////////////////////////
 
   /**
@@ -386,7 +387,7 @@ public class ImageCommand extends ProcessStarter implements ErrorConsumer {
     tmpFile.deleteOnExit();
     return tmpFile.getAbsolutePath();
   }
-  
+
   //////////////////////////////////////////////////////////////////////////////
 
   /**
@@ -396,7 +397,7 @@ public class ImageCommand extends ProcessStarter implements ErrorConsumer {
   private String convert2TmpFile(BufferedImage pBufferedImage)
                                                              throws IOException {
     String tmpFile = getTmpFile();
-    ImageTypeSpecifier spec = 
+    ImageTypeSpecifier spec =
       ImageTypeSpecifier.createFromRenderedImage(pBufferedImage);
     Iterator<ImageWriter> iter;
     iter = ImageIO.getImageWriters(spec,"TIFF");
@@ -461,7 +462,7 @@ public class ImageCommand extends ProcessStarter implements ErrorConsumer {
     if (sg == null) {
       sg = iDefaultScriptGenerator;
     }
-    
+
     // add command as a property
     StringBuilder builder = new StringBuilder();
     for (String token:getCommand()) {
@@ -492,7 +493,7 @@ public class ImageCommand extends ProcessStarter implements ErrorConsumer {
    * extension ".cmd" on a windows-plattform.
    */
 
-  public void createScript(String pFilename, Operation pOp, Properties pProps) 
+  public void createScript(String pFilename, Operation pOp, Properties pProps)
                                                    throws FileNotFoundException {
     if (System.getProperty("os.name").startsWith("Windows")) {
       pFilename=pFilename+".cmd";
