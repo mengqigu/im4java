@@ -17,3 +17,8 @@ hs_err_pid*
 ChangeLog
 
 images
+
+*/target/**
+
+*/.DS_Store
+.DS_Store

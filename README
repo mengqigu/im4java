@@ -4,6 +4,22 @@ INTRODUCTION
 im4java is a pure-java interface to the ImageMagick
 commandline. It is not meant as a replacement for JMagick, but as an addition.
 
+This repo is a fork from the official im4java repo.
+
+INSTALL
+=======
+
+To install as a maven package: make install (need to have maven installed in the OS)
+
+Make sure to label the version differently than the package in maven central
+and modify the install target in Makefile
+
+Example pom.xml dependency:
+<dependency>
+    <groupId>org.im4java</groupId>
+    <artifactId>im4java</artifactId>
+    <version>1.4.1</version>
+</dependency>
 
 LICENSE
 =======
@@ -27,6 +43,6 @@ documentation (in doc-src/xdocs).
 FEEDBACK
 ========
 
-Any feedback (bug-reports, suggestions, criticism) is welcome. 
+Any feedback (bug-reports, suggestions, criticism) is welcome.
 Currently, JMagick and im4java share a single mailing-list. You should
 register to the jmagick-users mailing-list at jmagick.sourceforge.net.

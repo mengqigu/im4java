@@ -115,7 +115,7 @@ compile-contrib: compile-lib
 
 # TODO: make this install target more robust and configurable
 install: jar
-	mvn install:install-file -Dfile=/Users/mengqigu/Developer/im4java/im4java-1.4.0.jar -DgroupId=org.im4java -DartifactId=im4java -Dversion=1.4.0 -Dpackaging=jar
+	mvn install:install-file -Dfile=/Users/mengqigu/Developer/im4java/im4java-1.4.MGTEST.jar -DgroupId=org.im4java -DartifactId=im4java -Dversion=1.4.MGTEST -Dpackaging=jar
 
 jar: jar-lib
 
